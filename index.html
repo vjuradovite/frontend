@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Invitaciones QR - Residencia</title>
+</head>
+<body>
+  <div id="login">
+    <h3>Iniciar sesión</h3>
+    <input id="codigo" placeholder="Código del residente">
+    <input id="password" placeholder="Contraseña" type="password">
+    <button onclick="login()">Entrar</button>
+    <p id="login-error" style="color:red;"></p>
+  </div>
+
+  <div id="qr-section" style="display:none;">
+    <h3>Generar QR</h3>
+    <form id="form">
+      <input name="invitado" placeholder="Nombre del invitado" required>
+      <button type="submit">Generar QR</button>
+    </form>
+    <div id="qrcode"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    let residenteAutenticado = null;
+
+    async function login() {
+      const codigo = document.getElementById('codigo').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo, password })
+      });
+      const data = await res.json();
+      if (!data.ok) {
+        document.getElementById('login-error').textContent = "Credenciales inválidas.";
+        return;
+      }
+
+      residenteAutenticado = data.nombre;
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('qr-section').style.display = 'block';
+    }
+
+    document.getElementById('form').onsubmit = async function(e) {
+      e.preventDefault();
+      const invitado = e.target.invitado.value;
+      const id = Date.now().toString(36);
+      await fetch('http://localhost:3000/guardar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, residente: residenteAutenticado, invitado, estado: 'activo' })
+      });
+
+      QRCode.toCanvas(document.getElementById('qrcode'), `http://localhost:3000/invitacion?id=${id}`);
+    };
+  </script>
+</body>
+</html>
