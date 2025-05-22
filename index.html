@@ -61,56 +61,7 @@
             <button type="submit" class="btn btn-pastel">Generar QR</button>
           </div>
         </form>
-        <div id="qrcode" class="text-center"></div>
-      </div>
-    </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <script>
-    let residenteAutenticado = null;
-
-    async function login() {
-      const codigo = document.getElementById('codigo').value;
-      const password = document.getElementById('password').value;
-
-      const res = await fetch('https://backend-41qc.onrender.com/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codigo, password })
-      });
-      const data = await res.json();
-      if (!data.ok) {
-        document.getElementById('login-error').textContent = "Credenciales inválidas.";
-        return;
-      }
-
-      residenteAutenticado = data.nombre;
-      document.getElementById('login').style.display = 'none';
-      document.getElementById('qr-section').style.display = 'block';
-    }
-
-    document.getElementById('form').onsubmit = async function(e) {
-      e.preventDefault();
-      const invitado = e.target.invitado.value;
-      const id = Date.now().toString(36);
-
-      await fetch('https://backend-41qc.onrender.com/guardar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, residente: residenteAutenticado, invitado, estado: 'activo' })
-      });
-
-      QRCode.toCanvas(
-        `https://backend-41qc.onrender.com/invitacion?id=${id}`,
-        function (err, canvas) {
-          if (err) return console.error("Error al generar QR", err);
-          const contenedor = document.getElementById('qrcode');
-          contenedor.innerHTML = '';
-          contenedor.appendChild(canvas);
-        }
-      );
-    };
-  </script>
-</body>
-</html>
+        <div id="qrcode" class="text-center mb-3"></div>
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-pastel" onclick="descargarQR()">Descargar QR</but
