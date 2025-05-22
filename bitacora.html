@@ -3,82 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <title>Bitácora - Paseo del Sol 5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f9f9fb;
+    }
+    .pastel-bg {
+      background-color: #e0f2f1;
+      border-radius: 15px;
+      padding: 2rem;
+    }
+    .btn-pastel {
+      background-color: #badaf1;
+      border: none;
+      color: #333;
+    }
+    .btn-pastel:hover {
+      background-color: #a6c8e0;
+    }
+    h1, h2 {
+      color: #6a5acd;
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
   <div class="container py-4">
-    <h1 class="text-center mb-4">Paseo del Sol 5</h1>
+    <h1 class="text-center mb-3">Paseo del Sol 5</h1>
     <h2 class="text-center mb-5">Bitácora de Ingresos</h2>
 
-    <div class="card p-4 mb-4">
-      <h5>Filtrar registros</h5>
-      <div class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label">Residente</label>
-          <input type="text" id="filtro-residente" class="form-control" placeholder="Nombre del residente">
+    <!-- LOGIN SUPERADMIN -->
+    <div id="login" class="row justify-content-center">
+      <div class="col-md-6 pastel-bg shadow">
+        <h4 class="text-center mb-3">Inicio de sesión - Superadmin</h4>
+        <div class="mb-3">
+          <label class="form-label">Código</label>
+          <input id="codigo" class="form-control" placeholder="Código de superadmin">
         </div>
-        <div class="col-md-3">
-          <label class="form-label">Desde</label>
-          <input type="date" id="filtro-inicio" class="form-control">
+        <div class="mb-3">
+          <label class="form-label">Contraseña</label>
+          <input id="password" class="form-control" placeholder="Contraseña" type="password">
         </div>
-        <div class="col-md-3">
-          <label class="form-label">Hasta</label>
-          <input type="date" id="filtro-fin" class="form-control">
+        <div class="d-grid mb-3">
+          <button class="btn btn-pastel" onclick="login()">Entrar</button>
         </div>
-        <div class="col-md-2 d-flex align-items-end">
-          <button class="btn btn-primary w-100" onclick="cargarBitacora()">Buscar</button>
-        </div>
+        <p id="login-error" class="text-danger text-center"></p>
       </div>
     </div>
 
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped" id="tabla-bitacora">
-        <thead class="table-dark">
-          <tr>
-            <th>ID</th>
-            <th>Residente</th>
-            <th>Invitado</th>
-            <th>Estado</th>
-            <th>Fecha de uso</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <script>
-    async function cargarBitacora() {
-      const residente = document.getElementById('filtro-residente').value.trim();
-      const inicio = document.getElementById('filtro-inicio').value;
-      const fin = document.getElementById('filtro-fin').value;
-
-      const params = new URLSearchParams();
-      if (residente) params.append('residente', residente);
-      if (inicio) params.append('fechaInicio', inicio);
-      if (fin) params.append('fechaFin', fin);
-
-      const res = await fetch('https://backend-41qc.onrender.com/bitacora?' + params.toString());
-      const data = await res.json();
-
-      const tbody = document.querySelector('#tabla-bitacora tbody');
-      tbody.innerHTML = '';
-
-      data.forEach(entry => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${entry.id}</td>
-          <td>${entry.residente}</td>
-          <td>${entry.invitado}</td>
-          <td>${entry.estado}</td>
-          <td>${entry.fechaUso ? new Date(entry.fechaUso).toLocaleString() : '—'}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
-
-    // Cargar todos los datos al iniciar
-    cargarBitacora();
-  </script>
-</body>
-</html>
+    <!-- CONTENIDO DE LA BITÁCORA -->
+    <div id="bitacora" style="display: none;">
+      <div class="card pastel-bg shadow mb-4">
+        <h5>Filtrar registros</h5>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Residente</label>
+            <input type="text" id="filtro-residente" class="form-control" placeholder="Nombre del residente">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Desde</label>
+            <input type="date" id="filtro-inicio" class="form-control">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Hasta</label>
+            <input type="date" id="filtro-fin" class="form-control">
+          </div>
+          <div class="col-md-2 d-flex align-items
