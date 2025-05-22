@@ -31,7 +31,7 @@
       const codigo = document.getElementById('codigo').value;
       const password = document.getElementById('password').value;
 
-      const res = await fetch('http://localhost:3000/login', {
+      const res = await fetch('https://backend-41qc.onrender.com/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codigo, password })
@@ -51,13 +51,13 @@
       e.preventDefault();
       const invitado = e.target.invitado.value;
       const id = Date.now().toString(36);
-      await fetch('http://localhost:3000/guardar', {
+      await fetch('https://backend-41qc.onrender.com/guardar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, residente: residenteAutenticado, invitado, estado: 'activo' })
       });
 
-      QRCode.toCanvas(document.getElementById('qrcode'), `http://localhost:3000/invitacion?id=${id}`);
+      QRCode.toCanvas(document.getElementById('qrcode'), `https://backend-41qc.onrender.com/invitacion?id=${id}`);
     };
   </script>
 </body>
