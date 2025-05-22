@@ -57,7 +57,15 @@
         body: JSON.stringify({ id, residente: residenteAutenticado, invitado, estado: 'activo' })
       });
 
-      QRCode.toCanvas(document.getElementById('qrcode'), `https://backend-41qc.onrender.com/invitacion?id=${id}`);
+     QRCode.toCanvas(
+  `https://backend-41qc.onrender.com/invitacion?id=${id}`,
+  function (err, canvas) {
+    if (err) return console.error("Error al generar QR", err);
+    const contenedor = document.getElementById('qrcode');
+    contenedor.innerHTML = ''; // Limpiar QR anterior
+    contenedor.appendChild(canvas); // Mostrar el nuevo QR
+  }
+);
     };
   </script>
 </body>
