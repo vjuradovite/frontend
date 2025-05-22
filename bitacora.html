@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Bitácora de Invitaciones</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #bitacora-section { display: none; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+
+  <div id="login-section">
+    <h2>Login Superadmin</h2>
+    <input id="admin-codigo" placeholder="Código admin"><br><br>
+    <input id="admin-pass" placeholder="Contraseña" type="password"><br><br>
+    <button onclick="login()">Entrar</button>
+    <p id="login-error" style="color:red;"></p>
+  </div>
+
+  <div id="bitacora-section">
+    <h2>Bitácora de Accesos QR</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Residente</th>
+          <th>Invitado</th>
+          <th>Estado</th>
+          <th>Fecha de Uso</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-bitacora"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const ADMIN_CODIGO = 'admin';
+    const ADMIN_PASSWORD = 'super123';
+
+    async function login() {
+      const codigo = document.getElementById('admin-codigo').value;
+      const password = document.getElementById('admin-pass').value;
+
+      if (codigo !== ADMIN_CODIGO || password !== ADMIN_PASSWORD) {
+        document.getElementById('login-error').textContent = "Credenciales inválidas.";
+        return;
+      }
+
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('bitacora-section').style.display = 'block';
+      cargarBitacora();
+    }
+
+    async function cargarBitacora() {
+      const res = await fetch('https://backend-41qc.onrender.com/bitacora');
+      const data = await res.json();
+      const tbody = document.getElementById('tabla-bitacora');
+      tbody.innerHTML = '';
+
+      data.forEach(reg => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${reg.id}</td>
+          <td>${reg.residente}</td>
+          <td>${reg.invitado}</td>
+          <td>${reg.estado}</td>
+          <td>${reg.fechaUso ? new Date(reg.fechaUso).toLocaleString() : ''}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+  </script>
+
+</body>
+</html>
