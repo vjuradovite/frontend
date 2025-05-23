@@ -105,16 +105,34 @@
         body: JSON.stringify({ id, residente: residenteAutenticado, invitado, estado: 'activo' })
       });
 
-      QRCode.toCanvas(
-        `https://backend-41qc.onrender.com/invitacion?id=${id}`,
-        function (err, canvas) {
-          if (err) return console.error("Error al generar QR", err);
-          const contenedor = document.getElementById('qrcode');
-          contenedor.innerHTML = '';
-          contenedor.appendChild(canvas);
-        }
-      );
+      const url = `https://backend-41qc.onrender.com/invitacion?id=${id}`;
+      QRCode.toCanvas(url, function (err, canvas) {
+        if (err) return console.error("Error al generar QR", err);
+        const contenedor = document.getElementById('qrcode');
+        contenedor.innerHTML = '';
+        canvas.id = "qr-canvas";
+        contenedor.appendChild(canvas);
+      });
     };
+
+    function logout() {
+      residenteAutenticado = null;
+      document.getElementById('codigo').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('login-error').textContent = '';
+      document.getElementById('qr-section').style.display = 'none';
+      document.getElementById('login').style.display = 'block';
+      document.getElementById('qrcode').innerHTML = '';
+    }
+
+    function descargarQR() {
+      const canvas = document.getElementById('qr-canvas');
+      if (!canvas) return alert("Primero genera un QR.");
+      const enlace = document.createElement('a');
+      enlace.download = 'invitacion-qr.png';
+      enlace.href = canvas.toDataURL('image/png');
+      enlace.click();
+    }
   </script>
 </body>
 </html>
