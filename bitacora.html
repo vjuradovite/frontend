@@ -100,8 +100,8 @@
     const ADMIN_PASSWORD = 'super123';
 
     async function login() {
-      const codigo = document.getElementById('admin-codigo').value;
-      const password = document.getElementById('admin-pass').value;
+      const codigo = document.getElementById('codigo').value;
+      const password = document.getElementById('password').value;
 
       if (codigo !== ADMIN_CODIGO || password !== ADMIN_PASSWORD) {
         document.getElementById('login-error').textContent = "Credenciales inválidas.";
