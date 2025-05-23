@@ -53,6 +53,10 @@
 
     <!-- CONTENIDO DE LA BITÁCORA -->
     <div id="bitacora" style="display: none;">
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-secondary" onclick="logout()">Cerrar sesión</button>
+      </div>
+
       <div class="card pastel-bg shadow mb-4">
         <h5>Filtrar registros</h5>
         <div class="row g-3">
@@ -68,4 +72,88 @@
             <label class="form-label">Hasta</label>
             <input type="date" id="filtro-fin" class="form-control">
           </div>
-          <div class="col-md-2 d-flex align-items
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-pastel w-100" onclick="cargarBitacora()">Buscar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive pastel-bg shadow">
+        <table class="table table-bordered table-striped" id="tabla-bitacora">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Residente</th>
+              <th>Invitado</th>
+              <th>Estado</th>
+              <th>Fecha de uso</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function login() {
+      const codigo = document.getElementById('codigo').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('https://backend-41qc.onrender.com/login-superadmin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo, password })
+      });
+
+      const data = await res.json();
+      if (!data.ok) {
+        document.getElementById('login-error').textContent = "Credenciales inválidas.";
+        return;
+      }
+
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('bitacora').style.display = 'block';
+      cargarBitacora();
+    }
+
+    function logout() {
+      document.getElementById('codigo').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('login-error').textContent = '';
+      document.getElementById('bitacora').style.display = 'none';
+      document.getElementById('login').style.display = 'block';
+      document.querySelector('#tabla-bitacora tbody').innerHTML = '';
+    }
+
+    async function cargarBitacora() {
+      const residente = document.getElementById('filtro-residente').value.trim();
+      const inicio = document.getElementById('filtro-inicio').value;
+      const fin = document.getElementById('filtro-fin').value;
+
+      const params = new URLSearchParams();
+      if (residente) params.append('residente', residente);
+      if (inicio) params.append('fechaInicio', inicio);
+      if (fin) params.append('fechaFin', fin);
+
+      const res = await fetch('https://backend-41qc.onrender.com/bitacora?' + params.toString());
+      const data = await res.json();
+
+      const tbody = document.querySelector('#tabla-bitacora tbody');
+      tbody.innerHTML = '';
+
+      data.forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.id}</td>
+          <td>${entry.residente}</td>
+          <td>${entry.invitado}</td>
+          <td>${entry.estado}</td>
+          <td>${entry.fechaUso ? new Date(entry.fechaUso).toLocaleString() : '—'}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>
