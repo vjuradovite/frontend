@@ -96,27 +96,22 @@
   </div>
 
   <script>
+   const ADMIN_CODIGO = 'admin';
+    const ADMIN_PASSWORD = 'super123';
+
     async function login() {
-      const codigo = document.getElementById('codigo').value;
-      const password = document.getElementById('password').value;
+      const codigo = document.getElementById('admin-codigo').value;
+      const password = document.getElementById('admin-pass').value;
 
-      const res = await fetch('https://backend-41qc.onrender.com/login-superadmin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codigo, password })
-      });
-
-      const data = await res.json();
-      if (!data.ok) {
+      if (codigo !== ADMIN_CODIGO || password !== ADMIN_PASSWORD) {
         document.getElementById('login-error').textContent = "Credenciales inválidas.";
         return;
       }
 
-      document.getElementById('login').style.display = 'none';
-      document.getElementById('bitacora').style.display = 'block';
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('bitacora-section').style.display = 'block';
       cargarBitacora();
     }
-
     function logout() {
       document.getElementById('codigo').value = '';
       document.getElementById('password').value = '';
